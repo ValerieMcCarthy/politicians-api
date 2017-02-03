@@ -1,9 +1,13 @@
 module Api::V1
   class PoliticiansController < ApplicationController
       def index
-        @politicians = Politician.all
-       
-        render json: @politicians
+        
+        if params[:q] 
+          @politicians = Politician.where('name LIKE (?)', "%#{params[:q]}%")
+        else
+          @politicians = Politician.all
+        end
+        render json: {count: @politicians.count, politicians: @politicians.collect {|pol| PoliticianSerializer.new(pol)} }
       end
 
       def show

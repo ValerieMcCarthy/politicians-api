@@ -1,9 +1,13 @@
 module Api::V1
   class OfficesController < ApplicationController
       def index
-        @offices = Office.all
-       
-        render json: @offices
+        
+        if params[:q] 
+          @offices = Office.where('name LIKE (?)', "%#{params[:q]}%")
+        else
+          @offices = Office.all
+        end
+        render json: {count: @offices.count, offices: @offices.collect {|off| OfficeSerializer.new(off)} }
       end
 
       def show

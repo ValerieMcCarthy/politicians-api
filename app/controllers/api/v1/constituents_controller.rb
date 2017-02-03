@@ -1,16 +1,24 @@
 module Api::V1
   class ConstituentsController < ApplicationController
       def index
-        @constituents = Constituent.all
-        render json: @constituents
-      end
+        
+        if params[:q] 
+          @constituents = Constituent.where('name LIKE (?)', "%#{params[:q]}%")
+        else
+          @constituents = Constituent.all
+        end
+        render json: {count: @constituents.count, constituents: @constituents.collect {|const| ConstituentSerializer.new(const)} }
+        end
 
       def show
+        binding.pry
         @constituent = Constituent.find(params[:id])
+        
         # @songs = @album.songs
         # to change from default/model serializer could change to
         # render: json: @album, serializer: AlbumShowSerializer
         render json: @constituent
+
 
       end
 
