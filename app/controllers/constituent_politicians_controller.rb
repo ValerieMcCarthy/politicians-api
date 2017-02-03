@@ -1,0 +1,2 @@
+class ConstituentPoliticiansController < ApplicationController
+end
